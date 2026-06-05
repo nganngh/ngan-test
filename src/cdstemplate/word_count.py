@@ -8,6 +8,42 @@ import re
 
 import pandas as pd
 
+STOP_WORDS = {
+    "a",
+    "an",
+    "and",
+    "are",
+    "as",
+    "at",
+    "be",
+    "but",
+    "by",
+    "for",
+    "if",
+    "in",
+    "into",
+    "is",
+    "it",
+    "no",
+    "not",
+    "of",
+    "on",
+    "or",
+    "such",
+    "that",
+    "the",
+    "their",
+    "then",
+    "there",
+    "these",
+    "they",
+    "this",
+    "to",
+    "was",
+    "will",
+    "with",
+}
+
 # You should use logging instead of print statements in code others will use,
 # so they can customize how much detail to see from your package
 # Refer to https://realpython.com/python-logging/ for detailed examples.
