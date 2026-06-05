@@ -83,6 +83,22 @@ class CorpusCounter:
             tokenization_pattern,
             case_insensitive,
         )
+    
+    def is_stop_word(self, token, stop_words=None):
+        """Return True if a word is a stop word.
+
+        :param token: The word to check.
+        :type token: str
+        :param stop_words: Optional custom stop-word iterable. Defaults to module STOP_WORDS.
+        :type stop_words: iterable[str] | None
+        """
+        if token is None:
+            return False
+
+        stop_words = stop_words if stop_words is not None else STOP_WORDS
+        lowered = {word.lower() for word in stop_words}
+        return token.lower() in lowered
+
 
     def add_tokenized_doc(self, token_list):
         """Tallies an already tokenized document in the corpus.
@@ -92,12 +108,13 @@ class CorpusCounter:
         """
         before_vocab_size = self.get_vocab_size()
         non_empty_tokens = [w for w in token_list if w != ""]
+        filtered_tokens = [w for w in non_empty_tokens if not self.is_stop_word(w)]
         if self.case_insensitive:
-            logger.info("Adding %s token(s) case insensitively", len(token_list))
-            self.token_counter.update([w.lower() for w in non_empty_tokens])
+            logger.info("Adding %s token(s) case insensitively", len(filtered_tokens))
+            self.token_counter.update([w.lower() for w in filtered_tokens])
         else:
-            logger.info("Adding %s token(s) case sensitively", len(token_list))
-            self.token_counter.update(non_empty_tokens)
+            logger.info("Adding %s token(s) case sensitively", len(filtered_tokens))
+            self.token_counter.update(filtered_tokens)
         after_vocab_size = self.get_vocab_size()
 
         logger.info(
