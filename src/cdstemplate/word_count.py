@@ -83,7 +83,7 @@ class CorpusCounter:
             tokenization_pattern,
             case_insensitive,
         )
-    
+
     def is_stop_word(self, token, stop_words=None):
         """Return True if a word is a stop word.
 
@@ -98,7 +98,6 @@ class CorpusCounter:
         stop_words = stop_words if stop_words is not None else STOP_WORDS
         lowered = {word.lower() for word in stop_words}
         return token.lower() in lowered
-
 
     def add_tokenized_doc(self, token_list):
         """Tallies an already tokenized document in the corpus.
