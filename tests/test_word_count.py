@@ -86,7 +86,7 @@ def test_corpus_counter_case_insensitive():
 
 
 def test_corpus_counter_stop_words_are_excluded():
-    cc = word_count.CorpusCounter()
+    cc = word_count.CorpusCounter(stop_words={"the", "a", "an"})
     cc.add_doc("the quick brown fox")
     assert cc.get_token_count("the") == 0
     assert cc.get_token_count("quick") == 1

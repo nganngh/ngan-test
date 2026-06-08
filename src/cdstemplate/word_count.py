@@ -8,41 +8,6 @@ import re
 
 import pandas as pd
 
-STOP_WORDS = {
-    "a",
-    "an",
-    "and",
-    "are",
-    "as",
-    "at",
-    "be",
-    "but",
-    "by",
-    "for",
-    "if",
-    "in",
-    "into",
-    "is",
-    "it",
-    "no",
-    "not",
-    "of",
-    "on",
-    "or",
-    "such",
-    "that",
-    "the",
-    "their",
-    "then",
-    "there",
-    "these",
-    "they",
-    "this",
-    "to",
-    "was",
-    "will",
-    "with",
-}
 
 # You should use logging instead of print statements in code others will use,
 # so they can customize how much detail to see from your package
@@ -68,7 +33,7 @@ def tokenize(text, pattern=r"\s"):
 class CorpusCounter:
     """A simple class object that tracks document and token counts in a corpus."""
 
-    def __init__(self, tokenization_pattern=r"\s", case_insensitive=False):
+    def __init__(self, tokenization_pattern=r"\s", case_insensitive=False, stop_words=None):
         """Constructor instantiates with empty counters
 
         :param tokenization_pattern: An optional tokenization pattern so that you are consistently tokenizing all documents the same. Defaults to splitting on whitespace
@@ -78,6 +43,7 @@ class CorpusCounter:
         self.doc_counter = 0
         self.tokenization_pattern = tokenization_pattern
         self.case_insensitive = case_insensitive
+        self.stop_words = stop_words
         logger.debug(
             "CorpusCounter instantiated, tokenization pattern: %s, case insensitive: %s",
             tokenization_pattern,
@@ -92,10 +58,8 @@ class CorpusCounter:
         :param stop_words: Optional custom stop-word iterable. Defaults to module STOP_WORDS.
         :type stop_words: iterable[str] | None
         """
-        if token is None:
+        if token is None or stop_words is None:
             return False
-
-        stop_words = stop_words if stop_words is not None else STOP_WORDS
         lowered = {word.lower() for word in stop_words}
         return token.lower() in lowered
 
@@ -107,7 +71,7 @@ class CorpusCounter:
         """
         before_vocab_size = self.get_vocab_size()
         non_empty_tokens = [w for w in token_list if w != ""]
-        filtered_tokens = [w for w in non_empty_tokens if not self.is_stop_word(w)]
+        filtered_tokens = [w for w in non_empty_tokens if not self.is_stop_word(w, stop_words=self.stop_words)]
         if self.case_insensitive:
             logger.info("Adding %s token(s) case insensitively", len(filtered_tokens))
             self.token_counter.update([w.lower() for w in filtered_tokens])
