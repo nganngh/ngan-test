@@ -85,6 +85,15 @@ def test_corpus_counter_case_insensitive():
     assert cc.get_token_count("B") == 0
 
 
+def test_corpus_counter_stop_words_are_excluded():
+    cc = word_count.CorpusCounter(stop_words={"the", "a", "an"})
+    cc.add_doc("the quick brown fox")
+    assert cc.get_token_count("the") == 0
+    assert cc.get_token_count("quick") == 1
+    assert cc.get_token_count("brown") == 1
+    assert cc.get_token_count("fox") == 1
+
+
 def test_corpus_counter_to_dataframe():
     cc = word_count.CorpusCounter()
     cc.add_doc("A a B b")
